@@ -51,10 +51,6 @@ def move(action, max_x, max_y,
     return new_x, new_y
 
 
-
-def random_binary_distribution(shape=(10, 10)):
-    return np.random.randint(2, size=shape)
-
 def random_binomial_distribution(p=0.4, shape=(10, 10)):
     return np.random.binomial(1, p, size=shape)
 

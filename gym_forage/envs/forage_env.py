@@ -9,15 +9,14 @@ class ForageEnv(gym.Env):
 
   def __init__(self):
       self.action_space = spaces.Discrete(9)
-      self.landscape = random_binomial_distribution()
+      self.state_space = random_binomial_distribution()
       self.curr_x = 0
       self.curr_y = 0
-      self.max_x = self.landscape.shape[0] - 1
-      self.max_y = self.landscape.shape[1] - 1
+      self.max_x = self.state_space.shape[0] - 1
+      self.max_y = self.state_space.shape[1] - 1
       self.state = None
       self.viewer = None
       self.resources = 10
-    #   self.curr_view = np.zeros(shape=(3, 3), dtype=np.int8)
 
       self._seed()
 
@@ -27,7 +26,7 @@ class ForageEnv(gym.Env):
       new_x, new_y = move(action, self.max_x, self.max_y,
                           self.curr_x, self.curr_y)
 
-      new_val = self.landscape[new_x, new_y]
+      new_val = self.state_space[new_x, new_y]
 
       done = self.resources <= 0
 
@@ -36,7 +35,29 @@ class ForageEnv(gym.Env):
       print("curr_x: {}".format(self.curr_x))
       print("curr_y: {}".format(self.curr_y))
 
-      self.curr_view = self.landscape[self.curr_x-1:self.curr_x+2, self.curr_y-1:self.curr_y+2]
+      if self.curr_x == 0:
+          self.curr_view = np.zeros(shape=(3, 3), dtype='int8')
+          self.curr_view[0,:] = -100
+          self.curr_view[1,:] = self.state_space[self.curr_x,self.curr_y-1:self.curr_y+2]
+          self.curr_view[2,:] = self.state_space[self.curr_x+1,self.curr_y-1:self.curr_y+2]
+      elif self.curr_x == self.max_x:
+         self.curr_view = np.zeros(shape=(3, 3), dtype='int8')
+         self.curr_view[0,:] = self.state_space[self.curr_x-1,self.curr_y-1:self.curr_y+2]
+         self.curr_view[1,:] = self.state_space[self.curr_x,self.curr_y-1:self.curr_y+2]
+         self.curr_view[2,:] = -100
+      elif self.curr_y == 0:
+          self.curr_view = np.zeros(shape=(3, 3), dtype='int8')
+          self.curr_view[:,0] = -100
+          self.curr_view[:,1] = self.state_space[self.curr_x-1:self.curr_x+2,self.curr_y]
+          self.curr_view[:,2] = self.state_space[self.curr_x-1:self.curr_x+2,self.curr_y+1]
+      elif self.curr_y == self.max_y:
+          self.curr_view = np.zeros(shape=(3, 3), dtype='int8')
+          self.curr_view[:,0] = self.state_space[self.curr_x-1:self.curr_x+2,self.curr_y-1]
+          self.curr_view[:,1] = self.state_space[self.curr_x-1:self.curr_x+2,self.curr_y]
+          self.curr_view[:,2] = -100
+      else:
+          self.curr_view = self.state_space[self.curr_x-1:self.curr_x+2, self.curr_y-1:self.curr_y+2]
+
       self.resources += new_val
 
       return self.curr_view, new_val, done, {}
@@ -48,10 +69,10 @@ class ForageEnv(gym.Env):
 
   def _reset(self):
       self.curr_x, self.curr_y = self.np_random.randint(low=0,
-                                                        high=self.landscape.shape[0],
+                                                        high=self.state_space.shape[0],
                                                         size=2)
       print("curr_location:    [{}, {}]".format(self.curr_x, self.curr_y))
-      print("val at curr loc:  {}".format(self.landscape[self.curr_x, self.curr_y]))
+      print("val at curr loc:  {}".format(self.state_space[self.curr_x, self.curr_y]))
 
   def _render(self, mode='human', close=False):
-      print(self.landscape)
+      print(self.state_space)
