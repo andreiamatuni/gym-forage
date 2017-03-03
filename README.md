@@ -13,7 +13,7 @@ you stay still, each step in the gym environment will deduct some
 (smaller than if you make a move) amount from your accumulated resources.
 
 You do not have perfect information. You can only see the cells that are
-immediately surrounding you (i.e. POMDP's ftw).
+immediately surrounding you (POMDP's ftw).
 
 For example, your immediate surroundings might look something like this (agent is in the
 center cell):

@@ -51,7 +51,7 @@ def move(action, max_x, max_y,
     return new_x, new_y
 
 
-def random_binomial_distribution(p=0.4, shape=(10, 10)):
+def random_binomial_distribution(p=0.4, shape=(5, 5)):
     return np.random.binomial(1, p, size=shape)
 
 def rand_distribution(shape=(10, 10), sigma=0.5, mu=0):

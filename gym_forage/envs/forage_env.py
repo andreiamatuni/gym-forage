@@ -12,6 +12,7 @@ class ForageEnv(gym.Env):
       self.state_space = random_binomial_distribution()
       self.curr_x = 0
       self.curr_y = 0
+      self.curr_view = np.zeros(shape=(3, 3), dtype='int16')
       self.max_x = self.state_space.shape[0] - 1
       self.max_y = self.state_space.shape[1] - 1
       self.state = None
@@ -35,28 +36,45 @@ class ForageEnv(gym.Env):
       print("curr_x: {}".format(self.curr_x))
       print("curr_y: {}".format(self.curr_y))
 
+      # I realize this is ugly and stupid.....just need to get something working
       if self.curr_x == 0:
-          self.curr_view = np.zeros(shape=(3, 3), dtype='int8')
-          self.curr_view[0,:] = -100
-          self.curr_view[1,:] = self.state_space[self.curr_x,self.curr_y-1:self.curr_y+2]
-          self.curr_view[2,:] = self.state_space[self.curr_x+1,self.curr_y-1:self.curr_y+2]
+          self.curr_view[0,:] = -1000
+          if self.curr_y == 0:
+              self.curr_view[:,0] = -1000
+              self.curr_view[1,1] = self.state_space[self.curr_x, self.curr_y].copy()
+              self.curr_view[2,1] = self.state_space[self.curr_x+1, self.curr_y].copy()
+              self.curr_view[1,2] = self.state_space[self.curr_x, self.curr_y+1].copy()
+              self.curr_view[2,2] = self.state_space[self.curr_x+1, self.curr_y+1].copy()
+          elif self.curr_y == self.max_y:
+              self.curr_view[:,2] = -1000
+              self.curr_view[1, 1] = self.state_space[self.curr_x, self.curr_y].copy()
+              self.curr_view[2, 1] = self.state_space[self.curr_x+1, self.curr_y].copy()
+              self.curr_view[1, 0] = self.state_space[self.curr_x, self.curr_y-1].copy()
+              self.curr_view[2, 0] = self.state_space[self.curr_x+1, self.curr_y-1].copy()
+          else:
+              self.curr_view[1,:] = self.state_space[self.curr_x,self.curr_y-1:self.curr_y+2].copy()
+              self.curr_view[2,:] = self.state_space[self.curr_x+1,self.curr_y-1:self.curr_y+2].copy()
       elif self.curr_x == self.max_x:
-         self.curr_view = np.zeros(shape=(3, 3), dtype='int8')
-         self.curr_view[0,:] = self.state_space[self.curr_x-1,self.curr_y-1:self.curr_y+2]
-         self.curr_view[1,:] = self.state_space[self.curr_x,self.curr_y-1:self.curr_y+2]
-         self.curr_view[2,:] = -100
+         self.curr_view[0,:] = self.state_space[self.curr_x-1,self.curr_y-1:self.curr_y+2].copy()
+         self.curr_view[1,:] = self.state_space[self.curr_x,self.curr_y-1:self.curr_y+2].copy()
+         self.curr_view[2,:] = -1000
       elif self.curr_y == 0:
-          self.curr_view = np.zeros(shape=(3, 3), dtype='int8')
-          self.curr_view[:,0] = -100
-          self.curr_view[:,1] = self.state_space[self.curr_x-1:self.curr_x+2,self.curr_y]
-          self.curr_view[:,2] = self.state_space[self.curr_x-1:self.curr_x+2,self.curr_y+1]
+          self.curr_view[:,0] = -1000
+          if self.curr_x == 0:
+              self.curr_view[0,:] = -1000
+              self.curr_view[1,1] = self.state_space[self.curr_x, self.curr_y].copy()
+              self.curr_view[2,1] = self.state_space[self.curr_x+1, self.curr_y].copy()
+              self.curr_view[1,2] = self.state_space[self.curr_x, self.curr_y+1].copy()
+              self.curr_view[2,2] = self.state_space[self.curr_x+1, self.curr_y+1].copy()
+          else:
+              self.curr_view[:,1] = self.state_space[self.curr_x-1:self.curr_x+2,self.curr_y].copy()
+              self.curr_view[:,2] = self.state_space[self.curr_x-1:self.curr_x+2,self.curr_y+1].copy()
       elif self.curr_y == self.max_y:
-          self.curr_view = np.zeros(shape=(3, 3), dtype='int8')
-          self.curr_view[:,0] = self.state_space[self.curr_x-1:self.curr_x+2,self.curr_y-1]
-          self.curr_view[:,1] = self.state_space[self.curr_x-1:self.curr_x+2,self.curr_y]
-          self.curr_view[:,2] = -100
+          self.curr_view[:,0] = self.state_space[self.curr_x-1:self.curr_x+2,self.curr_y-1].copy()
+          self.curr_view[:,1] = self.state_space[self.curr_x-1:self.curr_x+2,self.curr_y].copy()
+          self.curr_view[:,2] = -1000
       else:
-          self.curr_view = self.state_space[self.curr_x-1:self.curr_x+2, self.curr_y-1:self.curr_y+2]
+          self.curr_view = self.state_space[self.curr_x-1:self.curr_x+2, self.curr_y-1:self.curr_y+2].copy()
 
       self.resources += new_val
 
