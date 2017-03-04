@@ -50,8 +50,64 @@ def move(action, max_x, max_y,
 
     return new_x, new_y
 
+def update_curr_view(space, view, x, y, max_x, max_y):
+    if x == 0:
+        view[0,:] = -1000
+        if y == 0:
+            view[:,0] = -1000
+            view[1,1] = space[x, y].copy()
+            view[2,1] = space[x+1, y].copy()
+            view[1,2] = space[x, y+1].copy()
+            view[2,2] = space[x+1, y+1].copy()
+        elif y == max_y:
+            view[:,2] = -1000
+            view[1, 1] = space[x, y].copy()
+            view[2, 1] = space[x+1, y].copy()
+            view[1, 0] = space[x, y-1].copy()
+            view[2, 0] = space[x+1, y-1].copy()
+        else:
+            view[1,:] = space[x,y-1:y+2].copy()
+            view[2,:] = space[x+1,y-1:y+2].copy()
+    elif x == max_x:
+        view[2,:] = -1000
+        if y == max_y:
+            view[:,2] = -1000
+            view[1, 1] = space[x, y].copy()
+            view[0, 1] = space[x-1, y].copy()
+            view[0, 0] = space[x-1, y-1].copy()
+            view[1, 0] = space[x, y-1].copy()
+        elif y == 0:
+            view[:,0] = -1000
+            view[1, 1] = space[x, y].copy()
+            view[0, 1] = space[x-1, y].copy()
+            view[0, 2] = space[x-1, y+1].copy()
+            view[1, 2] = space[x, y+1].copy()
+        else:
+            view[0,:] = space[x-1,y-1:y+2].copy()
+            view[1,:] = space[x,y-1:y+2].copy()
+    elif y == 0:
+        view[:,0] = -1000
+        if x == 0:
+            view[0,:] = -1000
+            view[1,1] = space[x, y].copy()
+            view[2,1] = space[x+1, y].copy()
+            view[1,2] = space[x, y+1].copy()
+            view[2,2] = space[x+1, y+1].copy()
+        else:
+            view[:,1] = space[x-1:x+2,y].copy()
+            view[:,2] = space[x-1:x+2,y+1].copy()
+    elif y == max_y:
+        view[:,0] = space[x-1:x+2,y-1].copy()
+        view[:,1] = space[x-1:x+2,y].copy()
+        view[:,2] = -1000
+    else:
+        view[:] = space[x-1:x+2, y-1:y+2].copy()
+    # print('final view: \n\n')
+    # print(view)
+    # print("\n")
 
-def random_binomial_distribution(p=0.4, shape=(5, 5)):
+
+def random_binomial_distribution(p=0.4, shape=(10, 10)):
     return np.random.binomial(1, p, size=shape)
 
 def rand_distribution(shape=(10, 10), sigma=0.5, mu=0):
