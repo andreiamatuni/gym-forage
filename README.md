@@ -37,3 +37,10 @@ Taking action 4 means you stay in your current spot. After you visit a spot, its
 
 
 Your score = (# steps) X (accumulated resources)
+
+#### example
+Agent taking random actions in a grid filled using a binomial distribution function to distribute resources in the state space:
+
+![example](include/forage.gif)
+
+The green squares contain food, black are empty, and red is the edge of the grid.

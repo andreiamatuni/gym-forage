@@ -107,7 +107,7 @@ def update_curr_view(space, view, x, y, max_x, max_y):
     # print("\n")
 
 
-def random_binomial_distribution(p=0.4, shape=(10, 10)):
+def random_binomial_distribution(p=0.3, shape=(10, 10)):
     return np.random.binomial(1, p, size=shape)
 
 def rand_distribution(shape=(10, 10), sigma=0.5, mu=0):
