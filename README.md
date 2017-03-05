@@ -36,7 +36,7 @@ action N means you will move into that cell:
 Taking action 4 means you stay in your current spot. After you visit a spot, its resources are consumed.
 
 
-Your score = (# steps) X (accumulated resources)
+Your score = (# steps) * (accumulated resources)
 
 #### example
 Agent taking random actions in a grid filled using a binomial distribution function to distribute resources in the state space:
